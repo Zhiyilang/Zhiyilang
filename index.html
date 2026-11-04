@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>支一郎 / Zhiyilang — 零依赖命令行工具与 RPA→AI Agent 作品集</title>
+<meta name="description" content="支一郎（Zhiyilang）的公开作品集：6 个纯 Python 标准库、零依赖、离线可跑的命令行工具（账单合并、局域网快传、重复文件扫描、CSV 对比、Markdown 转 HTML、目录体积分析），以及 RPA→AI Agent 编译与审计工具链。">
+<meta name="keywords" content="零依赖工具,命令行工具,Python标准库,账单合并,局域网传输,重复文件查找,CSV对比,Markdown转HTML,目录分析,RPA,Agent,开源">
+<meta property="og:title" content="支一郎 / Zhiyilang — 零依赖命令行工具与 RPA→AI Agent 作品集">
+<meta property="og:description" content="6 个纯 Python 标准库、零依赖、离线可跑的命令行工具，以及 RPA→AI Agent 工具链。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zhiyilang.github.io/">
+<link rel="canonical" href="https://zhiyilang.github.io/">
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1a2e; --muted:#5b6472; --accent:#2563eb;
+    --accent2:#0ea5e9; --card:#f7f9fc; --border:#e4e9f2; --code:#0f172a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--fg);line-height:1.7;max-width:920px;margin:0 auto;padding:0 20px 64px}
+  header{padding:56px 0 28px;border-bottom:1px solid var(--border);margin-bottom:36px}
+  h1{font-size:2rem;letter-spacing:-.5px}
+  .sub{color:var(--muted);font-size:1.05rem;margin-top:8px}
+  h2{font-size:1.35rem;margin:44px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+  p{color:var(--fg)}
+  .lead{color:var(--muted);font-size:1.02rem;margin:14px 0 26px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:8px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 18px 16px;transition:.15s}
+  .card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 18px rgba(37,99,235,.08)}
+  .card h3{font-size:1.08rem;margin-bottom:6px}
+  .card h3 a{color:var(--fg);text-decoration:none}
+  .card h3 a:hover{color:var(--accent)}
+  .card p{color:var(--muted);font-size:.92rem;min-height:42px}
+  code{background:#eef2f9;color:var(--code);padding:2px 6px;border-radius:5px;font-size:.86em;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .install{margin-top:10px;font-size:.82rem;color:var(--accent2);word-break:break-all}
+  .cta{background:linear-gradient(135deg,#2563eb,#0ea5e9);color:#fff;border-radius:14px;padding:26px 24px;margin:40px 0 8px;text-align:center}
+  .cta h2{border:none;color:#fff;margin:0 0 8px;padding:0}
+  .cta p{color:#eaf2ff;margin-bottom:16px}
+  .btn{display:inline-block;background:#fff;color:var(--accent);font-weight:600;padding:11px 22px;border-radius:9px;text-decoration:none;font-size:.95rem}
+  .btn:hover{opacity:.92}
+  footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem;text-align:center}
+  ul.points{margin:10px 0 0 20px;color:var(--muted);font-size:.95rem}
+  ul.points li{margin:4px 0}
+  .tag{display:inline-block;background:#eef2f9;color:var(--accent);font-size:.72rem;padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:middle}
+</style>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"Person",
+  "name":"支一郎 (Zhiyilang)",
+  "url":"https://zhiyilang.github.io/",
+  "description":"RPA 开发转 AI Agent 工程，开源零依赖命令行工具作者。",
+  "sameAs":["https://github.com/Zhiyilang","https://afdian.com/a/Zhiyilang"],
+  "knowsAbout":["Python","RPA","AI Agents","命令行工具","自动化"]
+}
+</script>
+</head>
+<body>
+<header>
+  <h1>支一郎 / Zhiyilang</h1>
+  <div class="sub">RPA 开发 → AI Agent 工程 · 把影刀/UiBot 流程编译成可运行的智能体，并审计它们的可靠性</div>
+</header>
+
+<section>
+  <p class="lead">所有工具均为<strong>纯 Python 标准库实现</strong>：单个 <code>.py</code> 文件即可运行，无需 <code>pip install</code>、无网络请求、跨 Win / Mac / Linux。下载即用，可审计、可移植。</p>
+</section>
+
+<h2>🛠️ 零依赖命令行工具</h2>
+<div class="grid">
+  <div class="card">
+    <h3><a href="https://github.com/Zhiyilang/billfusion" target="_blank" rel="noopener">billfusion</a></h3>
+    <p>合并微信 / 支付宝 CSV 账单，自动分类、去重、生成月度报表。</p>
+    <div class="install">python billfusion.py wechat.csv alipay.csv</div>
+  </div>
+  <div class="card">
+    <h3><a href="https://github.com/Zhiyilang/lanshare" target="_blank" rel="noopener">lanshare</a></h3>
+    <p>同 Wi-Fi 下手机 ⇄ 电脑互传文件，纯 stdlib 起 HTTP 服务，无需任何客户端。</p>
+    <div class="install">python lanshare.py serve --port 8000</div>
+  </div>
+  <div class="card">
+    <h3><a href="https://github.com/Zhiyilang/dupescan" target="_blank" rel="noopener">dupescan</a></h3>
+    <p>用 SHA-256 跨目录查找重复文件，支持模式过滤、JSON / Markdown 输出、安全删除。</p>
+    <div class="install">python dupescan.py ./photos --pattern "*.jpg"</div>
+  </div>
+  <div class="card">
+    <h3><a href="https://github.com/Zhiyilang/csvdiff" target="_blank" rel="noopener">csvdiff</a></h3>
+    <p>按主键对比两个 CSV / JSON，精确报告新增、删除与字段级变更，支持 JSON / HTML 输出。</p>
+    <div class="install">python csvdiff.py old.csv new.csv --key id</div>
+  </div>
+  <div class="card">
+    <h3><a href="https://github.com/Zhiyilang/md2html" target="_blank" rel="noopener">md2html</a></h3>
+    <p>Markdown → 带样式的 HTML，离线、零依赖，支持 GitHub 风格排版与片段模式。</p>
+    <div class="install">python md2html.py doc.md -o doc.html</div>
+  </div>
+  <div class="card">
+    <h3><a href="https://github.com/Zhiyilang/dirsize" target="_blank" rel="noopener">dirsize</a></h3>
+    <p>目录体积分析，找出吃空间的大文件夹与文件，支持阈值过滤与 JSON 输出。</p>
+    <div class="install">python dirsize.py ./project --min 10M --top 20</div>
+  </div>
+</div>
+
+<h2>🤖 RPA → AI Agent 工具链</h2>
+<div class="grid">
+  <div class="card">
+    <h3><a href="https://github.com/Zhiyilang/rpa2agent" target="_blank" rel="noopener">rpa2agent</a></h3>
+    <p>把 RPA 流程 JSON 编译成可运行的 AI Agent 计划（loop/condition 安全求值，可导出独立 .py）。</p>
+    <div class="install">python rpa2agent.py flow.json</div>
+  </div>
+  <div class="card">
+    <h3><a href="https://github.com/Zhiyilang/rpaaudit" target="_blank" rel="noopener">rpaaudit</a></h3>
+    <p>RPA 流程静态审计：明文密钥、死循环、脆弱选择器、竞态等 6 类反模式检测器。</p>
+    <div class="install">python rpaaudit.py flow.json --report</div>
+  </div>
+</div>
+
+<h2>🏆 竞赛与实战</h2>
+<ul class="points">
+  <li>微软 × 英超 Inside the Game 开发者黑客松（可解释比赛情报智能体）</li>
+  <li>40+ 条 AI 竞赛管线（Collusion Sprint、AnySearch、QuorumPilot、ARC Prize、迪拜 Create AI Agents 等），代码与提交物料全部公开就绪</li>
+  <li>腾讯 TSRC 漏洞赏金（AI 安全方向合规方法论）</li>
+</ul>
+
+<div class="cta">
+  <h2>☕ 支持与定制</h2>
+  <p>如果这些工具帮你省了时间，欢迎在爱发电请我喝杯咖啡；企业级定制（私有规则、影刀 / UiBot 专属 lint、接入内部 CI/CD）欢迎洽谈。</p>
+  <a class="btn" href="https://afdian.com/a/Zhiyilang" target="_blank" rel="noopener">在爱发电支持我 →</a>
+</div>
+
+<footer>
+  <p>作品集由自动化维护，工具持续更新 · 全部基于 MIT 许可开源</p>
+  <p>联系与源码：<a href="https://github.com/Zhiyilang" target="_blank" rel="noopener">github.com/Zhiyilang</a> · <a href="https://afdian.com/a/Zhiyilang" target="_blank" rel="noopener">afdian.com/a/Zhiyilang</a></p>
+</footer>
+</body>
+</html>
