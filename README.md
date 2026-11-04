@@ -10,6 +10,7 @@
 
 | 工具 | 用途 | 链接 |
 |------|------|------|
+| **dirsize** | 目录体积分析，找出吃空间的大文件夹/文件 | [Zhiyilang/dirsize](https://github.com/Zhiyilang/dirsize) |
 | **md2html** | Markdown → 带样式的 HTML，离线、零依赖 | [Zhiyilang/md2html](https://github.com/Zhiyilang/md2html) |
 | **csvdiff** | 按主键对比两个 CSV/JSON，报告新增/删除/字段变更 | [Zhiyilang/csvdiff](https://github.com/Zhiyilang/csvdiff) |
 | **dupescan** | 用 SHA-256 跨目录查找重复文件 | [Zhiyilang/dupescan](https://github.com/Zhiyilang/dupescan) |
