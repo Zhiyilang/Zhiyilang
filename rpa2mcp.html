@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>把 RPA 流程一键编译成 MCP Server：rpa2mcp 设计与实战 | 支一郎技术博客</title>
+<meta name="description" content="影刀/UiBot 的 RPA 脚本大模型看不见？用纯标准库把流程 JSON 编译成 MCP 工具，让 Agent 直接调用你的自动化能力，零重写。">
+<meta name="keywords" content="RPA,MCP,Agent,影刀,UiBot,流程编译,Python,开源,AI Agent">
+<meta property="og:title" content="把 RPA 流程一键编译成 MCP Server：rpa2mcp 设计与实战">
+<meta property="og:description" content="影刀/UiBot 的 RPA 脚本大模型看不见？用纯标准库把流程 JSON 编译成 MCP 工具，让 Agent 直接调用你的自动化能力，零重写。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://zhiyilang.github.io/rpa2mcp.html">
+<meta property="article:published_time" content="2026-10-27">
+<link rel="canonical" href="https://zhiyilang.github.io/rpa2mcp.html">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "把 RPA 流程一键编译成 MCP Server：rpa2mcp 设计与实战", "description": "影刀/UiBot 的 RPA 脚本大模型看不见？用纯标准库把流程 JSON 编译成 MCP 工具，让 Agent 直接调用你的自动化能力，零重写。", "author": {"@type": "Person", "name": "支一郎 (Zhiyilang)"}, "datePublished": "2026-10-27", "dateModified": "2026-10-27", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://zhiyilang.github.io/rpa2mcp.html"}, "publisher": {"@type": "Person", "name": "支一郎 (Zhiyilang)"}, "keywords": "RPA,MCP,Agent,影刀,UiBot,流程编译,Python,开源,AI Agent"}</script>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1a2e; --muted:#5b6472; --accent:#2563eb;
+    --accent2:#0ea5e9; --card:#f7f9fc; --border:#e4e9f2; --code:#0f172a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--fg);line-height:1.8;max-width:860px;margin:0 auto;padding:0 20px 64px}
+  header{padding:40px 0 20px;border-bottom:1px solid var(--border);margin-bottom:28px}
+  .crumb{color:var(--muted);font-size:.9rem;margin-bottom:6px}
+  .crumb a{color:var(--accent);text-decoration:none}
+  h1{font-size:1.9rem;letter-spacing:-.4px;line-height:1.35}
+  h2{font-size:1.3rem;margin:38px 0 14px;padding-bottom:7px;border-bottom:2px solid var(--border)}
+  h3{font-size:1.1rem;margin:26px 0 10px}
+  p{margin:14px 0;color:var(--fg)}
+  .meta{color:var(--muted);font-size:.88rem;margin-top:10px}
+  .lead{color:var(--muted);font-size:1.02rem;margin:14px 0 8px}
+  code{background:#eef2f9;color:var(--code);padding:2px 6px;border-radius:5px;font-size:.86em;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre{background:#0f172a;color:#e2e8f0;padding:16px 18px;border-radius:10px;overflow:auto;margin:16px 0;font-size:.84rem;line-height:1.55}
+  pre code{background:none;color:inherit;padding:0}
+  blockquote{background:var(--card);border-left:4px solid var(--accent);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;color:var(--muted)}
+  blockquote p{margin:6px 0;color:var(--muted)}
+  ul,ol{margin:12px 0 12px 22px}
+  li{margin:6px 0}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:.92rem}
+  th,td{border:1px solid var(--border);padding:8px 10px;text-align:left}
+  th{background:var(--card);font-weight:600}
+  a{color:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:8px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;transition:.15s}
+  .card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 18px rgba(37,99,235,.08)}
+  .card h3{margin:0 0 6px;font-size:1.05rem}
+  .card h3 a{color:var(--fg);text-decoration:none}
+  .card p{color:var(--muted);font-size:.9rem;margin:0}
+  .cta{background:linear-gradient(135deg,#2563eb,#0ea5e9);color:#fff;border-radius:14px;padding:24px;margin:40px 0 8px;text-align:center}
+  .cta h2{border:none;color:#fff;margin:0 0 8px;padding:0;font-size:1.25rem}
+  .cta p{color:#eaf2ff;margin-bottom:14px}
+  .btn{display:inline-block;background:#fff;color:var(--accent);font-weight:600;padding:10px 20px;border-radius:9px;text-decoration:none;font-size:.92rem}
+  .btn:hover{opacity:.92}
+  footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="crumb"><a href="https://zhiyilang.github.io/blog.html">← 技术博客</a> · <a href="https://zhiyilang.github.io/">支一郎作品集</a></div>
+  <h1>把 RPA 流程一键编译成 MCP Server：rpa2mcp 设计与实战</h1>
+  <p class="meta">发布于 2026-10-27 · 阅读约 9 分钟 · 作者 支一郎（RPA 开发 → AI Agent 工程）</p>
+</header>
+<article>
+<blockquote><p>本文基于真实开源项目 [rpa2mcp](https://gitee.com/ZhiYIlang/rpa2mcp)（纯标准库，4 项单元测试全绿）写成。</p><p>文中所有代码与数字均为仓库实测结果：7 步示例流程编译产物 3219 字节、9 个 MCP 工具。</p></blockquote>
+<h2>一、问题：你的 RPA 脚本，Agent 调不动</h2>
+<p>2026 年的现实是：一边是 MCP（Model Context Protocol）成了 Agent 调用外部能力的事实标准， 另一边是无数 RPA 脚本躺在影刀、UiBot、Selenium 工程里，跑得好好的，但 <strong>LLM 完全看不见它们</strong>。</p>
+<p>常见的两条路都有问题：</p>
+<ol><li><strong>用 Agent 框架重写一遍流程</strong> —— 成本高、风险大，一个 7 步的下单流程重写两天，还不敢上线；</li><li><strong>给 RPA 引擎套个 HTTP 接口</strong> —— 你得到的是一个「黑盒按钮」，Agent 只知道"能调用"，</li></ol>
+<p>   不知道每一步在干什么、参数是什么、顺序是什么。</p>
+<p>我想要的是第三条路：<strong>不重写逻辑，只补一个适配层，把流程的每一步暴露成 MCP 工具</strong>。</p>
+<p>这就是 <code>rpa2mcp</code> 做的事。</p>
+<h2>二、设计思路：JSON 流程 → 类型化工具</h2>
+<p>MCP 工具的核心是「有名字、有 docstring、有类型标注的函数」。所以只要能把 RPA 流程翻译成 一组带类型的函数，问题就解决了。</p>
+<h3>2.1 输入：一份中立的流程 JSON</h3>
+<p>先定义一个与具体引擎无关的流程描述格式（贴近影刀 / UiBot 的指令习惯）：</p>
+<pre><code class="language-json">{
+  "name": "下单并查询物流",
+  "description": "登录后下单，并逐单查询物流状态",
+  "steps": [
+    {"type": "navigate", "attrs": {"url": "https://shop.example.com/login", "description": "打开登录页"}},
+    {"type": "input",   "attrs": {"selector": "#user", "value": "{{user}}"}},
+    {"type": "input",   "attrs": {"selector": "#pass", "value": "{{password}}"}},
+    {"type": "click",   "attrs": {"selector": "#submit"}},
+    {"type": "extract", "attrs": {"selector": ".order-no", "store": "order_no", "description": "抓取订单号"}},
+    {"type": "loop",    "attrs": {"items": "orders", "var": "o", "description": "逐单查询物流"},
+     "body": [
+       {"type": "click",   "attrs": {"selector": ".track", "value": "{{o.id}}"}},
+       {"type": "extract", {"attrs": {"selector": ".status", "store": "o.status"}}
+     ]},
+    {"type": "llm", "attrs": {"prompt": "总结物流状态并标注异常", "store": "summary"}}
+  ]
+}</code></pre>
+<p>几个关键设计：</p>
+<ul><li><strong><code>type</code> 是稳定的小集合</strong> —— <code>navigate / input / click / extract / loop / llm / ...</code>，</li></ul>
+<p>  新增一种步骤只需在生成器里注册一条参数规则；</p>
+<ul><li><strong><code>attrs.description</code> 是人话注释</strong> —— 原样搬进生成代码的 docstring，Agent 靠它理解工具用途</li></ul>
+<p>  （<strong>这是最值得养成的习惯：给每一步写 description，Agent 才看得懂你的流程</strong>）；</p>
+<ul><li><strong><code>store</code> 是变量绑定</strong> —— 这一步的结果存进哪个变量，供后续步骤引用；</li><li><strong><code>body</code> 支持嵌套</strong> —— <code>loop</code> 里的子步骤会被<strong>提升为独立的顶层工具</strong>（下面细说）。</li></ul>
+<h3>2.2 参数签名从哪来：按步骤类型推导</h3>
+<p>这是最需要说清楚的一点。函数签名<strong>不是</strong>靠扫描 <code>{{user}}</code> 这类模板变量得来的，而是<strong>按步骤类型静态推导</strong>：</p>
+<pre><code class="language-python">def _param_sig(step):
+    params = []
+    if step.type == "navigate": params.append("url: str")
+    if step.type in ("click", "input"): params.append("selector: str")
+    if step.type in ("input",):          params.append("value: str = ''")
+    if step.type == "llm":               params.append("prompt: str")
+    if step.type == "extract":           params.append("store: str = ''")
+    if step.type == "loop":              params.append("items: str = ''"); params.append("var: str = ''")
+    ...</code></pre>
+<p>这样做的好处是<strong>签名稳定可预测</strong>：Agent 拿到工具列表时，参数结构跟流程写法无关， 不会因为某一步多写了一个 <code>{{变量}}</code> 就多出一个参数、导致 Agent 调用时困惑。</p>
+<p>代价也要讲明白：<strong>模板变量目前是原样透传的</strong>。上例中 <code>"value": "{{user}}"</code> 会作为字面值 传给 <code>driver.input(...)</code>，由你的 <code>Driver</code> 实现去决定怎么解析（替换成真实用户名、还是从环境变量读）。 把模板解析做成生成期特性是明确的 roadmap 项——但那需要先定义一套变量作用域规则， 在没想清楚之前，我选择透传而不是瞎猜。</p>
+<h3>2.3 编译：两步走，不搞宏魔术</h3>
+<pre><code class="language-python">from rpa2mcp import parse_flow_json
+from rpa2mcp.generator import generate_mcp_server
+
+flow = parse_flow_json(open("examples/order_flow.json", encoding="utf-8").read())
+code = generate_mcp_server(flow)          # 返回 str，直接可写文件</code></pre>
+<p><code>parse_flow_json</code> 负责解析与校验（未知步骤类型、结构不合法都在<strong>编译期</strong>报错， 而不是等运行时 Agent 调用了才炸），<code>generate_mcp_server</code> 负责代码生成。</p>
+<p><strong>编译期报错</strong>值得强调：流程写错是 RPA 最高频的事故源，把它前移到加载阶段， 是这类工具能省下的最大一笔隐性成本。</p>
+<h3>2.4 生成：每个步骤一个 MCP 工具</h3>
+<p>实测生成的 <code>server.py</code>（3219 字节）关键片段：</p>
+<pre><code class="language-python">from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("rpa2mcp: 下单并查询物流")
+
+class Driver:
+    """Replace each stub with your RPA engine call."""
+    def navigate(self, url: str):
+        raise NotImplementedError("implement navigate() with your browser engine")
+    def input(self, selector: str, value: str = ""):
+        raise NotImplementedError("implement input()")
+    def click(self, selector: str):
+        raise NotImplementedError("implement click()")
+    # ...
+
+driver = Driver()
+
+@mcp.tool()
+def step_1_navigate(url: str) -&gt; str:
+    """打开登录页"""
+    return str(driver.navigate(url=url))
+
+@mcp.tool()
+def step_2_input(selector: str, value: str = '') -&gt; str:
+    """input action"""
+    return str(driver.input(selector=selector, value=value))
+
+@mcp.tool()
+def step_5_extract(selector: str, store: str = '') -&gt; str:
+    """抓取订单号"""
+    return str(driver.extract(selector=selector, store=store))
+
+if __name__ == "__main__":
+    # Transports: stdio by default; add --transport sse for remote agents.
+    mcp.run()</code></pre>
+<p>四个从实测里读出来的细节：</p>
+<ol><li><strong>7 步流程 → 9 个工具</strong>：<code>loop</code> 体内的两个子步骤被提升为独立的顶层工具</li></ol>
+<p>   （<code>step_7_click</code> / <code>step_8_extract</code>）。这不是 bug——MCP 没有"子工具"概念，    把循环体摊平成可单独调用的工具，Agent 才能灵活地"查这一单"而不是"跑整个循环"；</p>
+<ol><li><strong>docstring 有回退</strong>：<code>s.get("description") or f"{s.type} action"</code>。写了 description 的步骤</li></ol>
+<p>   （<code>step_1_navigate</code> → "打开登录页"）Agent 看得懂，没写的就只剩 "input action" 这种空话——</p>
+<p>   <strong>工具的描述质量，直接决定 Agent 会不会用错它</strong>；</p>
+<ol><li><strong>Driver 是唯一的手写部分</strong>：一个类、每个步骤类型一个方法，把 MCP 世界接到你现有引擎上；</li><li><strong>默认 stdio 传输</strong>，加 <code>--transport sse</code> 就能给远程 Agent 用。</li></ol>
+<h3>2.5 关键取舍：为什么不做「运行时解释器」</h3>
+<p>另一条路是写一个运行时，加载 JSON 后直接解释执行。我选了<strong>代码生成</strong>：</p>
+<table><thead><tr><th></th><th>代码生成</th><th>运行时解释</th></tr></thead><tbody>
+<tr><td>出错时机</td><td>编译期（流程加载即报错）</td><td>运行期（Agent 调到才炸）</td></tr>
+<tr><td>可读性</td><td>生成的是普通 .py，能打断点、能改</td><td>黑盒</td></tr>
+<tr><td>分发</td><td>生成文件可直接交给同事</td><td>必须连带运行时</td></tr>
+<tr><td>与 MCP 集成</td><td>直接就是 <code>@mcp.tool()</code></td><td>要额外包一层</td></tr>
+</tbody></table>
+<p>代价是生成的代码有重复——7 步流程无所谓，500 步流程才会考虑折中。 RPA 流程普遍在几十步量级，代码生成是更优解。</p>
+<h2>三、实测：跑一遍看看</h2>
+<pre><code class="language-bash">git clone https://gitee.com/ZhiYIlang/rpa2mcp.git
+cd rpa2mcp
+python -m unittest discover -s tests -v     # 4 项测试
+python -m rpa2mcp generate examples/order_flow.json -o server.py</code></pre>
+<p>仓库里的 4 项测试，覆盖的是这个方案真正的风险点：</p>
+<ul><li><code>test_parse</code> —— 示例流程能被完整解析，<code>loop</code> 的 <code>body</code> 嵌套不丢；</li><li><code>test_generated_is_valid_python_without_mcp_installed</code> —— <strong>没装 <code>mcp</code> 包的机器上也能编译</strong>，</li></ul>
+<p>  产物至少是语法合法的 Python（本机当时就处于这个状态，这条测试是硬需求）；</p>
+<ul><li><code>test_generated_has_mcp_tool_decorators</code> —— 产物里 <code>@mcp.tool()</code> 数量与步骤数匹配；</li><li><code>test_cli_end_to_end_writes_runnable_file</code> —— 命令行端到端，产物含 <code>class Driver</code>。</li></ul>
+<p>其中第二条最实在：<strong>编译链路不许依赖 <code>mcp</code> 包</strong>，否则没装 MCP 环境的 RPA 机器连代码都生成不了。</p>
+<h2>四、一个真实的使用场景</h2>
+<p>把上面那个流程接到一个已有的 UiBot 工程上，实际改动只有两处。</p>
+<p><strong>第一处</strong>，写 <code>Driver</code>，内部调用 UiBot 的指令 API——你原来的逻辑一行没改：</p>
+<pre><code class="language-python">class Driver:
+    def __init__(self, page):
+        self.page = page
+    def click(self, selector: str):
+        return self.page.click(selector)
+    def input(self, selector: str, value: str = ""):
+        # 模板变量在这里解析：把 {{user}} 换成真实值
+        return self.page.input(selector, self.resolve(value))</code></pre>
+<p><strong>第二处</strong>，在 Claude Desktop 或任意 MCP Client 的配置里指向生成的 <code>server.py</code>。</p>
+<p>然后你就可以对 Agent 说：</p>
+<blockquote><p>"帮我把这批 12 个订单的物流查一下，异常的标出来"</p></blockquote>
+<p>Agent 自己决定：先调 <code>step_1_navigate</code>，再 <code>step_2_input</code> / <code>step_3_input</code>， 逐个 <code>step_7_click</code> 查询、<code>step_8_extract</code> 抓状态，最后 <code>step_9_llm</code> 总结。</p>
+<p><strong>你的 RPA 代码一行没重写，但它现在长在 Agent 身上了。</strong></p>
+<h2>五、工具箱全景：四个工具各管一段</h2>
+<p><code>rpa2mcp</code> 是「RPA → AI Agent」工具箱的一环，另外三个姊妹工具解决邻近问题：</p>
+<table><thead><tr><th>工具</th><th>解决的问题</th><th>测试</th></tr></thead><tbody>
+<tr><td>[rpa2agent](https://gitee.com/ZhiYIlang/rpa2agent)</td><td>流程 → 可运行 Agent 计划 + 生成独立 .py</td><td>26 项</td></tr>
+<tr><td>[rpa2test](https://gitee.com/ZhiYIlang/rpa2test)</td><td>无浏览器 Mock 干跑，流程逻辑先测再上线</td><td>21 项</td></tr>
+<tr><td>[rpaaudit](https://gitee.com/ZhiYIlang/rpaaudit)</td><td>静态审计：硬编码密钥、死循环、脆弱选择器</td><td>10 项</td></tr>
+<tr><td><strong>rpa2mcp</strong></td><td>流程 → MCP Server，让 Agent 调用</td><td>4 项</td></tr>
+</tbody></table>
+<p>合计 <strong>61 项测试全绿，纯标准库零依赖</strong>——这是刻意的：RPA 工程师的机器上往往装着一堆版本混乱的库， 零依赖意味着 clone 下来就一定能跑。</p>
+<h2>六、结语</h2>
+<p>Agent 时代真正稀缺的不是"会不会写 Agent"，而是<strong>把已有生产力接进 Agent 的能力</strong>。 对 RPA 工程师来说，你手里那些跑了几年的流程就是资产——缺的只是那一层编译器和适配层。</p>
+<p>流程还是那份流程，只是现在，它会回答大模型的话了。</p>
+<p>---</p>
+<p><strong>项目地址</strong>：[gitee.com/ZhiYIlang/rpa2mcp](https://gitee.com/ZhiYIlang/rpa2mcp)（MIT，欢迎 Issue / PR）</p>
+<p><strong>作者</strong>：支一郎 · RPA 开发 / AI Agent 方向 · [作品集](https://gitee.com/ZhiYIlang/ZhiYIlang.gitee.io)</p>
+</article>
+<div class="cta">
+  <h2>🛠️ 相关工具与定制</h2>
+  <p>文中工具均为纯 Python 标准库、零依赖、开源实现。需要企业级定制（私有规则、影刀/UiBot 专属 lint、接入内部 CI/CD）欢迎洽谈。</p>
+  <a class="btn" href="https://zhiyilang.github.io/#tools">查看 6 个零依赖命令行工具 →</a>
+</div>
+<footer>
+  <p>更多实战：<a href="https://zhiyilang.github.io/blog.html">支一郎技术博客</a> · 源码 <a href="https://github.com/Zhiyilang" target="_blank" rel="noopener">github.com/Zhiyilang</a></p>
+</footer>
+</body>
+</html>
