@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>没有浏览器怎么测 RPA 流程？rpa2test 的 Mock 干跑与「宣称=实测」闸门 | 支一郎技术博客</title>
+<meta name="description" content="RPA 流程的逻辑被绑死在浏览器上，回归极贵。用 Mock 干跑 + 证据声明闸门，把断言卡进 CI，践行「宣称=实测」。">
+<meta name="keywords" content="RPA,测试,干跑,Mock,CI,流程回归,Python,开源,断言">
+<meta property="og:title" content="没有浏览器怎么测 RPA 流程？rpa2test 的 Mock 干跑与「宣称=实测」闸门">
+<meta property="og:description" content="RPA 流程的逻辑被绑死在浏览器上，回归极贵。用 Mock 干跑 + 证据声明闸门，把断言卡进 CI，践行「宣称=实测」。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://zhiyilang.github.io/blog/rpa2test.html">
+<meta property="article:published_time" content="2026-10-27">
+<link rel="canonical" href="https://zhiyilang.github.io/blog/rpa2test.html">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "没有浏览器怎么测 RPA 流程？rpa2test 的 Mock 干跑与「宣称=实测」闸门", "description": "RPA 流程的逻辑被绑死在浏览器上，回归极贵。用 Mock 干跑 + 证据声明闸门，把断言卡进 CI，践行「宣称=实测」。", "author": {"@type": "Person", "name": "支一郎 (Zhiyilang)"}, "datePublished": "2026-10-27", "dateModified": "2026-10-27", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://zhiyilang.github.io/blog/rpa2test.html"}, "publisher": {"@type": "Person", "name": "支一郎 (Zhiyilang)"}, "keywords": "RPA,测试,干跑,Mock,CI,流程回归,Python,开源,断言"}</script>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1a2e; --muted:#5b6472; --accent:#2563eb;
+    --accent2:#0ea5e9; --card:#f7f9fc; --border:#e4e9f2; --code:#0f172a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--fg);line-height:1.8;max-width:860px;margin:0 auto;padding:0 20px 64px}
+  header{padding:40px 0 20px;border-bottom:1px solid var(--border);margin-bottom:28px}
+  .crumb{color:var(--muted);font-size:.9rem;margin-bottom:6px}
+  .crumb a{color:var(--accent);text-decoration:none}
+  h1{font-size:1.9rem;letter-spacing:-.4px;line-height:1.35}
+  h2{font-size:1.3rem;margin:38px 0 14px;padding-bottom:7px;border-bottom:2px solid var(--border)}
+  h3{font-size:1.1rem;margin:26px 0 10px}
+  p{margin:14px 0;color:var(--fg)}
+  .meta{color:var(--muted);font-size:.88rem;margin-top:10px}
+  .lead{color:var(--muted);font-size:1.02rem;margin:14px 0 8px}
+  code{background:#eef2f9;color:var(--code);padding:2px 6px;border-radius:5px;font-size:.86em;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre{background:#0f172a;color:#e2e8f0;padding:16px 18px;border-radius:10px;overflow:auto;margin:16px 0;font-size:.84rem;line-height:1.55}
+  pre code{background:none;color:inherit;padding:0}
+  blockquote{background:var(--card);border-left:4px solid var(--accent);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;color:var(--muted)}
+  blockquote p{margin:6px 0;color:var(--muted)}
+  ul,ol{margin:12px 0 12px 22px}
+  li{margin:6px 0}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:.92rem}
+  th,td{border:1px solid var(--border);padding:8px 10px;text-align:left}
+  th{background:var(--card);font-weight:600}
+  a{color:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:8px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;transition:.15s}
+  .card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 18px rgba(37,99,235,.08)}
+  .card h3{margin:0 0 6px;font-size:1.05rem}
+  .card h3 a{color:var(--fg);text-decoration:none}
+  .card p{color:var(--muted);font-size:.9rem;margin:0}
+  .cta{background:linear-gradient(135deg,#2563eb,#0ea5e9);color:#fff;border-radius:14px;padding:24px;margin:40px 0 8px;text-align:center}
+  .cta h2{border:none;color:#fff;margin:0 0 8px;padding:0;font-size:1.25rem}
+  .cta p{color:#eaf2ff;margin-bottom:14px}
+  .btn{display:inline-block;background:#fff;color:var(--accent);font-weight:600;padding:10px 20px;border-radius:9px;text-decoration:none;font-size:.92rem}
+  .btn:hover{opacity:.92}
+  footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="crumb"><a href="https://zhiyilang.github.io/blog/">← 技术博客</a> · <a href="https://zhiyilang.github.io/">支一郎作品集</a></div>
+  <h1>没有浏览器怎么测 RPA 流程？rpa2test 的 Mock 干跑与「宣称=实测」闸门</h1>
+  <p class="meta">发布于 2026-10-27 · 阅读约 9 分钟 · 作者 支一郎（RPA 开发 → AI Agent 工程）</p>
+</header>
+<article>
+<blockquote><p>基于真实开源项目 [rpa2test](https://gitee.com/ZhiYIlang/rpa2test)（纯标准库，21 项单元测试全绿）。</p><p>文中每一条输出都是我在这台机器上跑出来的，命令可复现。</p></blockquote>
+<h2>一、RPA 团队最贵的成本，不是开发</h2>
+<p>问一个做了两年以上 RPA 的人：改一个老流程，时间花在哪？</p>
+<p>答案几乎一致：<strong>三分之二花在"真机点一遍"上。</strong></p>
+<ul><li>想改登录流程的一个选择器，得连到测试环境真登一次；</li><li>想加一个余额断言，得等业务给一个有数据的账号；</li><li>最麻烦的是<strong>回归</strong>——改了第 3 步，谁也不知道第 17 步是不是被带崩了；</li><li>于是大家的选择是：<strong>不改</strong>。流程越捂越臭，最后整条重写。</li></ul>
+<p>根子在于：RPA 流程的逻辑和它依赖的浏览器<strong>被焊死在一起</strong>。 测试一个纯逻辑问题（选择器写错、变量名拼错、循环边界），却要付出启动整个系统的代价。</p>
+<p><code>rpa2test</code> 的思路很简单：<strong>把流程逻辑从浏览器里抽出来，喂一份 mock 数据进去跑。</strong></p>
+<h2>二、dryrun：一份 JSON + 一份 mock</h2>
+<p>流程用影刀 / UiBot 风格的 JSON 描述：</p>
+<pre><code class="language-json">{
+  "name": "BankLogin",
+  "description": "登录并抽取余额，断言为正",
+  "steps": [
+    {"type": "navigate", "attrs": {"url": "https://bank.example.com/login"}},
+    {"type": "input", "attrs": {"selector": "#user", "value": "zhiyilang"}},
+    {"type": "input", "attrs": {"selector": "#pass", "value": "s3cr3t"}},
+    {"type": "click", "attrs": {"selector": "#submit"}},
+    {"type": "wait", "attrs": {"ms": 500}},
+    {"type": "extract", "attrs": {"selector": "#balance", "save_as": "balance"}},
+    {"type": "assert", "attrs": {"expr": "balance &gt; 0"}}
+  ]
+}</code></pre>
+<p>mock 只描述"页面会返回什么"：</p>
+<pre><code class="language-json">{ "inputs": {}, "data": { "#balance": 4200 } }</code></pre>
+<p>跑起来：</p>
+<pre><code class="language-bash">python -m rpa2test dryrun examples/login_flow.json --mock examples/login_expect.json</code></pre>
+<p>实测输出：</p>
+<pre><code># Dry-run: BankLogin
+# Demo: login then extract balance, assert positive.
+[navigate:https://bank.example.com/login] navigate -&gt; https://bank.example.com/login
+[input:#user] input #user = zhiyilang
+[input:#pass] input #pass = s3cr3t
+[click:#submit] click #submit
+[wait:wait] wait 500ms
+[extract:#balance] extract #balance -&gt; 4200 =&gt; 4200
+[assert:assert] assert balance &gt; 0 -&gt; True =&gt; True
+
+context keys: ['balance']
+inputs set: 2 | clicks: 1
+DRY-RUN OK</code></pre>
+<p>七步流程的执行轨迹、最终 context、输入数、点击数，全部打印。 断言失败时退出码 <code>1</code>——这一条决定了它<strong>能不能卡进 CI</strong>：</p>
+<pre><code class="language-bash">$ python -m rpa2test verify examples/verified_login_flow_fail.json \
+    --mock examples/login_expect_fail.json
+DRY-RUN FAILED: assertion failed: balance &gt; 0
+$ echo $?
+1</code></pre>
+<p>支持的步骤：<code>navigate / input / click / wait / extract / llm / loop / condition / assert</code>， <code>loop</code> 支持 <code>{var}</code> 占位渲染，<code>condition</code> 走安全表达式求值。</p>
+<h2>三、真正想讲的：dryrun 不够，「沉默不等于证明」</h2>
+<p>上面那个 <code>DRY-RUN OK</code> 有个致命问题：<strong>它只证明流程跑通了，没证明流程声称的效果发生了。</strong></p>
+<p>一个典型的例子：流程文档里写着"运行后生成 report.csv 并写入汇总结果"。 <code>dryrun</code> 全程没碰文件系统，它当然会说 OK——<strong>它根本不知道有这个声明</strong>。</p>
+<p>于是有了第二个子命令 <code>verify</code>。做法是：<strong>流程必须自己声明证据</strong>，工具读回真实产物复核。</p>
+<pre><code class="language-json">"expect": [
+  {"kind": "context_equals", "key": "balance", "value": 4200},
+  {"kind": "artifact_exists", "path": "report.csv"},
+  {"kind": "artifact_contains", "path": "report.csv", "contains": "OK"},
+  {"kind": "assert", "expr": "balance &gt; 100"}
+]</code></pre>
+<pre><code class="language-bash">$ python -m rpa2test verify examples/verified_login_flow.json \
+    --mock examples/login_expect.json
+# Verify: BankLoginVerified
+[PASS] context_equals: balance == 4200 (got 4200)
+[PASS] assert: balance &gt; 100
+VERIFIED</code></pre>
+<p>关键的设计取舍在这一条：<strong>如果流程没有声明任何证据，<code>verify</code> 直接退出码 1。</strong></p>
+<pre><code class="language-python"># verifier.py：没有声明证据 = 无法证实，直接失败
+if not expectations:
+    print("[SKIP] no expectations declared — cannot verify")
+    print("VERIFICATION FAILED")
+    return 1        # 沉默不等于证明</code></pre>
+<p>实测（拿一个没有 <code>expect</code> 块的流程去跑 <code>verify</code>）：</p>
+<pre><code>$ python -m rpa2test verify examples/login_flow.json --mock examples/login_expect.json
+# Verify: BankLogin
+[SKIP] no expectations declared — cannot verify
+VERIFICATION FAILED
+$ echo $?
+1</code></pre>
+<p>我见过太多"绿色即成功"的自动化：CI 挂了绿勾，评审点了头，上线三天才发现报表是空的。 问题不在于谁偷懒，而在于<strong>没有任何机制要求流程说出"我该产生什么"</strong>。 把"声明证据"变成硬门槛，撒谎的成本就高于说实话的成本。</p>
+<p>这一条也是我自己写代码时守的规矩：<strong>宣称=实测</strong>。工具不过是把这条规矩变成了可执行的东西。</p>
+<h2>四、一个容易被忽略的点：表达式沙箱</h2>
+<p><code>assert</code> 和 <code>condition</code> 要执行用户写的表达式，而流程 JSON 经常来自不可信的第三方 （下载的模板、同事发的、网上抄的）。直接 <code>eval()</code> 等于把机器交出去。</p>
+<p><code>rpa2test</code> 的做法是<strong>白名单 AST 节点</strong>：只放行比较、逻辑运算、下标、<code>len()</code> 这类节点， 属性访问、函数调用（除白名单内建）、<code>__import__</code> 一律拒绝。</p>
+<p>实测：</p>
+<pre><code class="language-python">&gt;&gt;&gt; from rpa2test.runtime import _safe_eval
+&gt;&gt;&gt; _safe_eval('1 + 1', {})
+2
+&gt;&gt;&gt; _safe_eval('len("abc") &gt; 2', {})
+True
+&gt;&gt;&gt; _safe_eval('__import__("os").system("echo pwned")', {})
+ValueError: forbidden call</code></pre>
+<p>第三条是重点：<strong>一个能跑在 CI 里、读取外部流程文件的工具，表达式求值必须是沙箱。</strong> 这一条做不到，"零依赖干跑"就是个后门。</p>
+<h2>五、落地：怎么塞进现有 CI</h2>
+<p>仓库里已经带了一份 <code>.github/workflows/tests.yml</code>（GitHub Actions；推到 Gitee 可用 Gitee Go）， 三版本矩阵 + 一个敌意 locale job，原文如下：</p>
+<pre><code class="language-yaml">name: tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m unittest discover -s tests
+
+  hostile-locale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: run under non-English locale (asserts no locale dependency)
+        env:
+          LC_ALL: C
+          LANG: C
+        run: python -m unittest discover -s tests</code></pre>
+<p>想把它变成真正的流程回归门，加一个遍历 <code>flows/</code> 的 job 即可 （这段是按需扩展，不是仓库现有内容）：</p>
+<pre><code class="language-yaml">  flow-regression:
+    steps:
+      - run: |
+          for f in flows/*.json; do
+            python -m rpa2test verify "$f" --mock mocks/$(basename "$f" .json).json
+          done</code></pre>
+<p><code>hostile-locale</code> 那一 job 是踩过的坑：早版本有处字符串处理依赖英文环境，切到 C locale 就挂。</p>
+<p><strong>不依赖语言环境的代码，和零依赖一样，是交付给别人的基本礼貌。</strong></p>
+<p>21 项测试覆盖解析、运行时、核验器三层，纯标准库零依赖， clone 下来 <code>python -m unittest discover -s tests</code> 即可跑（Python ≥ 3.8）。</p>
+<h2>六、小结</h2>
+<p>RPA 的流程逻辑本质上就是普通程序逻辑：有条件、有循环、有变量、有断言。 它之所以难测，只是因为<strong>被绑在了浏览器上</strong>。拆开之后，你能拿到全部现成的工程手段： mock、回归、CI 卡点、沙箱求值。</p>
+<p>而比"能测"更重要的一条是：<strong>要求流程自己声明该产生什么，然后读回产物复核。</strong> 工具名里的 <code>test</code> 是这个意思，<code>verify</code> 也是这个意思。</p>
+<p>---</p>
+<p><strong>项目地址</strong>：[gitee.com/ZhiYIlang/rpa2test](https://gitee.com/ZhiYIlang/rpa2test)（MIT，21 项测试全绿） 同系列：[rpa2agent](https://gitee.com/ZhiYIlang/rpa2agent)（流程→Agent 编译器）· [rpa2mcp](https://gitee.com/ZhiYIlang/rpa2mcp)（流程→MCP Server）· [rpaaudit](https://gitee.com/ZhiYIlang/rpaaudit)（流程静态审计）</p>
+<p><strong>作者</strong>：支一郎 · RPA 开发 / AI Agent 方向 · [作品集](https://gitee.com/ZhiYIlang/ZhiYIlang.gitee.io)</p>
+</article>
+<div class="cta">
+  <h2>🛠️ 相关工具与定制</h2>
+  <p>文中工具均为纯 Python 标准库、零依赖、开源实现。需要企业级定制（私有规则、影刀/UiBot 专属 lint、接入内部 CI/CD）欢迎洽谈。</p>
+  <a class="btn" href="https://zhiyilang.github.io/#tools">查看 6 个零依赖命令行工具 →</a>
+</div>
+<footer>
+  <p>更多实战：<a href="https://zhiyilang.github.io/blog/">支一郎技术博客</a> · 源码 <a href="https://github.com/Zhiyilang" target="_blank" rel="noopener">github.com/Zhiyilang</a></p>
+</footer>
+</body>
+</html>
