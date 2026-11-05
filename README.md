@@ -74,3 +74,7 @@ RPA 开发转 AI Agent 工程的实战笔记，全部零依赖 Python、可复�
 ---
 
 <sub>📫 联系方式：2383844705@qq.com 或作品集站点 zhiyilang.github.io。作品集由自动化维护，工具持续更新。</sub>
+
+## ☕ 赞助支持（爱发电）
+
+如果你用这些工具省了时间，欢迎到 [爱发电](https://afdian.com/a/Zhiyilang074811) 请我喝杯咖啡。
