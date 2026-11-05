@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>支一郎技术博客 | RPA → AI Agent 工程实战</title>
+<meta name="description" content="影刀/UiBot 转 AI Agent 的实战博客：把 RPA 流程编译成 MCP Server、零依赖 Python 做 Excel 自动化、用 Mock 干跑测 RPA 流程。">
+<meta name="keywords" content="RPA,Agent,影刀,UiBot,Python,Excel自动化,MCP,开源,技术博客">
+<meta property="og:title" content="支一郎技术博客 | RPA → AI Agent 工程实战">
+<meta property="og:description" content="影刀/UiBot 转 AI Agent 的实战博客。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zhiyilang.github.io/blog.html">
+<link rel="canonical" href="https://zhiyilang.github.io/blog.html">
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1a2e; --muted:#5b6472; --accent:#2563eb;
+    --accent2:#0ea5e9; --card:#f7f9fc; --border:#e4e9f2; --code:#0f172a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--fg);line-height:1.8;max-width:860px;margin:0 auto;padding:0 20px 64px}
+  header{padding:40px 0 20px;border-bottom:1px solid var(--border);margin-bottom:28px}
+  .crumb{color:var(--muted);font-size:.9rem;margin-bottom:6px}
+  .crumb a{color:var(--accent);text-decoration:none}
+  h1{font-size:1.9rem;letter-spacing:-.4px;line-height:1.35}
+  h2{font-size:1.3rem;margin:38px 0 14px;padding-bottom:7px;border-bottom:2px solid var(--border)}
+  h3{font-size:1.1rem;margin:26px 0 10px}
+  p{margin:14px 0;color:var(--fg)}
+  .meta{color:var(--muted);font-size:.88rem;margin-top:10px}
+  .lead{color:var(--muted);font-size:1.02rem;margin:14px 0 8px}
+  code{background:#eef2f9;color:var(--code);padding:2px 6px;border-radius:5px;font-size:.86em;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre{background:#0f172a;color:#e2e8f0;padding:16px 18px;border-radius:10px;overflow:auto;margin:16px 0;font-size:.84rem;line-height:1.55}
+  pre code{background:none;color:inherit;padding:0}
+  blockquote{background:var(--card);border-left:4px solid var(--accent);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;color:var(--muted)}
+  blockquote p{margin:6px 0;color:var(--muted)}
+  ul,ol{margin:12px 0 12px 22px}
+  li{margin:6px 0}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:.92rem}
+  th,td{border:1px solid var(--border);padding:8px 10px;text-align:left}
+  th{background:var(--card);font-weight:600}
+  a{color:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:8px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;transition:.15s}
+  .card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 18px rgba(37,99,235,.08)}
+  .card h3{margin:0 0 6px;font-size:1.05rem}
+  .card h3 a{color:var(--fg);text-decoration:none}
+  .card p{color:var(--muted);font-size:.9rem;margin:0}
+  .cta{background:linear-gradient(135deg,#2563eb,#0ea5e9);color:#fff;border-radius:14px;padding:24px;margin:40px 0 8px;text-align:center}
+  .cta h2{border:none;color:#fff;margin:0 0 8px;padding:0;font-size:1.25rem}
+  .cta p{color:#eaf2ff;margin-bottom:14px}
+  .btn{display:inline-block;background:#fff;color:var(--accent);font-weight:600;padding:10px 20px;border-radius:9px;text-decoration:none;font-size:.92rem}
+  .btn:hover{opacity:.92}
+  footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="crumb"><a href="https://zhiyilang.github.io/">← 支一郎作品集</a></div>
+  <h1>支一郎技术博客</h1>
+  <p class="lead">RPA 开发转 AI Agent 工程的实战笔记：把已有的生产力接进大模型，而不是从零重写。</p>
+</header>
+<h2>📝 全部文章</h2>
+<div class="grid">
+  <div class="card">
+    <h3><a href="https://zhiyilang.github.io/rpa2mcp.html">把 RPA 流程一键编译成 MCP Server：rpa2mcp 设计与实战</a></h3>
+    <p>影刀/UiBot 的 RPA 脚本大模型看不见？用纯标准库把流程 JSON 编译成 MCP 工具，让 Agent 直接调用你的自动化能力，零重写。</p>
+  </div>
+  <div class="card">
+    <h3><a href="https://zhiyilang.github.io/uibot-excel.html">零依赖 Python 实战：在 UiBot 里做一套 Excel 自动化组件</a></h3>
+    <p>不装 pandas、不装 openpyxl，纯标准库 30 行解析 xlsx，实现合并、透视、对账三件套，可直接在 UiBot 工程里调用。</p>
+  </div>
+  <div class="card">
+    <h3><a href="https://zhiyilang.github.io/rpa2test.html">没有浏览器怎么测 RPA 流程？rpa2test 的 Mock 干跑与「宣称=实测」闸门</a></h3>
+    <p>RPA 流程的逻辑被绑死在浏览器上，回归极贵。用 Mock 干跑 + 证据声明闸门，把断言卡进 CI，践行「宣称=实测」。</p>
+  </div>
+</div>
+<div class="cta">
+  <h2>☕ 支持与定制</h2>
+  <p>如果这些文章对你有用，欢迎看我的开源工具；企业级定制（私有规则、影刀/UiBot 专属 lint、接入内部 CI/CD）欢迎洽谈。</p>
+  <a class="btn" href="https://zhiyilang.github.io/#tools">查看零依赖工具 →</a>
+</div>
+<footer>
+  <p>源码与工具：<a href="https://github.com/Zhiyilang" target="_blank" rel="noopener">github.com/Zhiyilang</a></p>
+</footer>
+</body>
+</html>
