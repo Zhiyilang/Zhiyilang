@@ -49,6 +49,16 @@
 - 40+ 条 AI 竞赛管线（Collusion Sprint、AnySearch、QuorumPilot、ARC Prize、迪拜 Create AI Agents 等），代码与提交物料全部公开就绪
 - 腾讯 TSRC 漏洞赏金（AI 安全方向合规方法论）
 
+## 📝 技术博客（真实项目实测）
+
+RPA 开发转 AI Agent 工程的实战笔记，全部零依赖 Python、可复现：
+- [把 RPA 流程一键编译成 MCP Server](https://github.com/Zhiyilang/blog/blob/main/01-rpa2mcp.md)
+- [零依赖 Python 实战：UiBot 里的 Excel 自动化三件套](https://github.com/Zhiyilang/blog/blob/main/02-uibot-excel.md)
+- [没有浏览器怎么测 RPA 流程？Mock 干跑](https://github.com/Zhiyilang/blog/blob/main/03-rpa2test.md)
+- [零依赖调用大模型：纯 urllib 不装 openai 包](https://github.com/Zhiyilang/blog/blob/main/04-llm-client.md)
+
+全套笔记仓库：**[github.com/Zhiyilang/blog](https://github.com/Zhiyilang/blog)**
+
 ## 💡 我擅长
 
 - RPA 流程设计、逆向与重构（影刀 / UiBot）
@@ -58,9 +68,9 @@
 
 ## ☕ 支持与定制
 
-如果这些工具帮你省了时间，欢迎在 **[爱发电 (afdian)](https://afdian.com/a/Zhiyilang)** 请我喝杯咖啡 ⭐。
-企业级定制（私有规则、影刀/UiBot 专属 lint、接入内部 CI/CD）欢迎私信洽谈。
+如果这些工具帮你省了时间，欢迎到 **[作品集站点](https://zhiyilang.github.io/)** 了解接单与定制方式。
+企业级定制（私有规则、影刀/UiBot 专属 lint、接入内部 CI/CD）请发邮件 **2383844705@qq.com** 洽谈。
 
 ---
 
-<sub>📫 联系方式请见各仓库或爱发电主页。作品集由自动化维护，工具持续更新。</sub>
+<sub>📫 联系方式：2383844705@qq.com 或作品集站点 zhiyilang.github.io。作品集由自动化维护，工具持续更新。</sub>
