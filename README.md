@@ -34,14 +34,10 @@
 | **lanshare** | 同 Wi-Fi 下手机⇄电脑互传文件（纯 stdlib） | [Zhiyilang/lanshare](https://github.com/Zhiyilang/lanshare) |
 | **billfusion** | 合并微信/支付宝 CSV 账单，分类去重出报表 | [Zhiyilang/billfusion](https://github.com/Zhiyilang/billfusion) |
 
-## 🤖 RPA → AI Agent 工具链
+## 🤖 RPA → AI Agent 工程
 
-| 工具 | 用途 | 技术 |
-|------|------|------|
-| [**rpa2agent**](https://github.com/Zhiyilang/rpa2agent) | 把 RPA 流程 JSON 编译成可运行 AI Agent 计划（loop/condition 安全求值，可导出独立 .py） | Python · 零依赖 |
-| [**rpaaudit**](https://github.com/Zhiyilang/rpaaudit) | RPA 流程静态审计：明文密钥、死循环、脆弱选择器、竞态等 6 类反模式 | Python · 零依赖 |
-
-上述工具均为**纯标准库实现**，自带 README、英文 SEO topics 与 MIT 许可，已公开上线。
+- [**awesome-rpa-to-ai-agent**](https://github.com/Zhiyilang/awesome-rpa-to-ai-agent) — 影刀 / UiBot 转 LLM·Agent 的精选路线图：实战改写、框架对比、常见坑、真实竞赛入口，已公开上线
+- 配套零依赖工具（billfusion / lanshare / dupescan / csvdiff / md2html / dirsize）见上方「零依赖命令行工具」
 
 ## 🏆 竞赛与实战
 
