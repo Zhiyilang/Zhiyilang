@@ -33,6 +33,7 @@
 | **dupescan** | 用 SHA-256 跨目录查找重复文件 | [Zhiyilang/dupescan](https://github.com/Zhiyilang/dupescan) |
 | **lanshare** | 同 Wi-Fi 下手机⇄电脑互传文件（纯 stdlib） | [Zhiyilang/lanshare](https://github.com/Zhiyilang/lanshare) |
 | **billfusion** | 合并微信/支付宝 CSV 账单，分类去重出报表 | [Zhiyilang/billfusion](https://github.com/Zhiyilang/billfusion) |
+| **titlegen** | 抖音/小红书爆款标题 + 30秒脚本生成器，离线零依赖 | [Zhiyilang/viral-title-generator](https://github.com/Zhiyilang/viral-title-generator) |
 
 ## 🤖 RPA → AI Agent 工程
 
