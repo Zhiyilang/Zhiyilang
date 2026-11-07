@@ -10,9 +10,9 @@
 | 影刀 / UiBot 机器人开发 | 3–5 天 | **¥500 起** |
 | 企业定制（私有规则、CI/CD 接入） | 面议 | ¥1000 起 |
 
-**询价发 2383844705@qq.com**（标题写「接单 + 需求类型」）→ 我回报价与工期 → 你确认后开工 → 验收后付款，微信 / 支付宝结算。数据可脱敏后发送。
+**询价发 someonelikebaku@163.com**（标题写「接单 + 需求类型」，工作日 24h 内由自动巡检接住回信）→ 我回报价与工期 → 你确认后开工 → 验收后付款，微信 / 支付宝结算。数据可脱敏后发送。
 
-作品集与全部工具：https://zhiyilang.github.io/
+接单门面（明码标价+付款码+22件成品货架）：https://mcd-persona-card.app.workbuddy.host/ ｜ 作品集与开源工具：https://zhiyilang.github.io/
 
 ---
 
@@ -65,11 +65,11 @@ RPA 开发转 AI Agent 工程的实战笔记，全部零依赖 Python、可复�
 ## ☕ 支持与定制
 
 如果这些工具帮你省了时间，欢迎到 **[作品集站点](https://zhiyilang.github.io/)** 了解接单与定制方式。
-企业级定制（私有规则、影刀/UiBot 专属 lint、接入内部 CI/CD）请发邮件 **2383844705@qq.com** 洽谈。
+企业级定制（私有规则、影刀/UiBot 专属 lint、接入内部 CI/CD）请发邮件 **someonelikebaku@163.com** 洽谈。
 
 ---
 
-<sub>📫 联系方式：2383844705@qq.com 或作品集站点 zhiyilang.github.io。作品集由自动化维护，工具持续更新。</sub>
+<sub>📫 联系方式：someonelikebaku@163.com 或接单门面 mcd-persona-card.app.workbuddy.host / 作品集 zhiyilang.github.io。作品集由自动化维护，工具持续更新。</sub>
 
 ## ☕ 赞助支持（爱发电）
 
