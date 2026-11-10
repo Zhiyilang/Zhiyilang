@@ -62,7 +62,7 @@
   <p class="meta">发布于 2026-10-27 · 阅读约 9 分钟 · 作者 支一郎（RPA 开发 → AI Agent 工程）</p>
 </header>
 <article>
-<blockquote><p>本文基于真实开源项目 [rpa2mcp](https://gitee.com/ZhiYIlang/rpa2mcp)（纯标准库，4 项单元测试全绿）写成。</p><p>文中所有代码与数字均为仓库实测结果：7 步示例流程编译产物 3219 字节、9 个 MCP 工具。</p></blockquote>
+<blockquote><p>本文基于真实开源项目 [rpa2mcp](https://gitee.com/ZhiYIlang/rpa2mcp)（纯标准库，4 项单元测试全绿）写成。</p><p>文中所有代码与数字均为仓库实测结果：7 步示例流程编译产物 3219 字符、9 个 MCP 工具。</p></blockquote>
 <h2>一、问题：你的 RPA 脚本，Agent 调不动</h2>
 <p>2026 年的现实是：一边是 MCP（Model Context Protocol）成了 Agent 调用外部能力的事实标准， 另一边是无数 RPA 脚本躺在影刀、UiBot、Selenium 工程里，跑得好好的，但 <strong>LLM 完全看不见它们</strong>。</p>
 <p>常见的两条路都有问题：</p>
@@ -119,7 +119,7 @@ code = generate_mcp_server(flow)          # 返回 str，直接可写文件</cod
 <p><code>parse_flow_json</code> 负责解析与校验（未知步骤类型、结构不合法都在<strong>编译期</strong>报错， 而不是等运行时 Agent 调用了才炸），<code>generate_mcp_server</code> 负责代码生成。</p>
 <p><strong>编译期报错</strong>值得强调：流程写错是 RPA 最高频的事故源，把它前移到加载阶段， 是这类工具能省下的最大一笔隐性成本。</p>
 <h3>2.4 生成：每个步骤一个 MCP 工具</h3>
-<p>实测生成的 <code>server.py</code>（3219 字节）关键片段：</p>
+<p>实测生成的 <code>server.py</code>（3219 字符，CLI 原文 <code>3219 bytes</code>）关键片段：</p>
 <pre><code class="language-python">from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("rpa2mcp: 下单并查询物流")
